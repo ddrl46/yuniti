@@ -6,6 +6,12 @@
  */
 
 /**
+ * We <3 Errors
+ */
+ini_set('display_errors', 1);
+error_reporting(E_STRICT | E_ERROR | E_WARNING | E_PARSE | E_COMPILE_ERROR | E_USER_ERROR | E_USER_WARNING);
+
+/**
  * Sets the base path for Yuniti
  */
 define('ROOT', dirname(__FILE__) . '/');
@@ -14,6 +20,13 @@ define('ROOT', dirname(__FILE__) . '/');
  * Sets the system folder path
  */
 define('SYSTEM_ROOT', ROOT . 'system/');
+
+/**
+ * Propel setup
+ */
+require_once SYSTEM_ROOT . 'lib/propel/Propel.php';
+Propel::init(SYSTEM_ROOT . 'orm/conf/Yuniti-conf.php');
+set_include_path(SYSTEM_ROOT . PATH_SEPARATOR . get_include_path());
 
 /**
  * Yuniti autoloader
