@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="yuniti" defaultIdMethod="native">
+	<table name="thread" phpName="Thread">
+		<column name="threadid" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+	</table>
+</database>
