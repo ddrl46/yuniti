@@ -2,50 +2,44 @@
 
 
 /**
- * Base class that represents a row from the 'thread' table.
+ * Base class that represents a row from the 'user' table.
  *
  * 
  *
  * @package    propel.generator.orm.om
  */
-abstract class BaseThread extends BaseObject  implements Persistent
+abstract class BaseUser extends BaseObject  implements Persistent
 {
 
 	/**
 	 * Peer class name
 	 */
-	const PEER = 'ThreadPeer';
+	const PEER = 'UserPeer';
 
 	/**
 	 * The Peer class.
 	 * Instance provides a convenient way of calling static methods on a class
 	 * that calling code may not be able to identify.
-	 * @var        ThreadPeer
+	 * @var        UserPeer
 	 */
 	protected static $peer;
 
 	/**
-	 * The value for the threadid field.
+	 * The value for the userid field.
 	 * @var        int
 	 */
-	protected $threadid;
+	protected $userid;
 
 	/**
-	 * The value for the threaduserid field.
-	 * @var        int
-	 */
-	protected $threaduserid;
-
-	/**
-	 * The value for the title field.
+	 * The value for the username field.
 	 * @var        string
 	 */
-	protected $title;
+	protected $username;
 
 	/**
-	 * @var        User
+	 * @var        array Thread[] Collection to store aggregation of Thread objects.
 	 */
-	protected $aUser;
+	protected $collThreads;
 
 	/**
 	 * @var        array Post[] Collection to store aggregation of Post objects.
@@ -67,98 +61,64 @@ abstract class BaseThread extends BaseObject  implements Persistent
 	protected $alreadyInValidation = false;
 
 	/**
-	 * Get the [threadid] column value.
+	 * Get the [userid] column value.
 	 * 
 	 * @return     int
 	 */
-	public function getThreadid()
+	public function getUserid()
 	{
-		return $this->threadid;
+		return $this->userid;
 	}
 
 	/**
-	 * Get the [threaduserid] column value.
-	 * 
-	 * @return     int
-	 */
-	public function getThreaduserid()
-	{
-		return $this->threaduserid;
-	}
-
-	/**
-	 * Get the [title] column value.
+	 * Get the [username] column value.
 	 * 
 	 * @return     string
 	 */
-	public function getTitle()
+	public function getUsername()
 	{
-		return $this->title;
+		return $this->username;
 	}
 
 	/**
-	 * Set the value of [threadid] column.
+	 * Set the value of [userid] column.
 	 * 
 	 * @param      int $v new value
-	 * @return     Thread The current object (for fluent API support)
+	 * @return     User The current object (for fluent API support)
 	 */
-	public function setThreadid($v)
+	public function setUserid($v)
 	{
 		if ($v !== null) {
 			$v = (int) $v;
 		}
 
-		if ($this->threadid !== $v) {
-			$this->threadid = $v;
-			$this->modifiedColumns[] = ThreadPeer::THREADID;
+		if ($this->userid !== $v) {
+			$this->userid = $v;
+			$this->modifiedColumns[] = UserPeer::USERID;
 		}
 
 		return $this;
-	} // setThreadid()
+	} // setUserid()
 
 	/**
-	 * Set the value of [threaduserid] column.
-	 * 
-	 * @param      int $v new value
-	 * @return     Thread The current object (for fluent API support)
-	 */
-	public function setThreaduserid($v)
-	{
-		if ($v !== null) {
-			$v = (int) $v;
-		}
-
-		if ($this->threaduserid !== $v) {
-			$this->threaduserid = $v;
-			$this->modifiedColumns[] = ThreadPeer::THREADUSERID;
-		}
-
-		if ($this->aUser !== null && $this->aUser->getUserid() !== $v) {
-			$this->aUser = null;
-		}
-
-		return $this;
-	} // setThreaduserid()
-
-	/**
-	 * Set the value of [title] column.
+	 * Set the value of [username] column.
 	 * 
 	 * @param      string $v new value
-	 * @return     Thread The current object (for fluent API support)
+	 * @return     User The current object (for fluent API support)
 	 */
-	public function setTitle($v)
+	public function setUsername($v)
 	{
 		if ($v !== null) {
 			$v = (string) $v;
 		}
 
-		if ($this->title !== $v) {
-			$this->title = $v;
-			$this->modifiedColumns[] = ThreadPeer::TITLE;
+		if ($this->username !== $v) {
+			$this->username = $v;
+			$this->modifiedColumns[] = UserPeer::USERNAME;
 		}
 
 		return $this;
-	} // setTitle()
+	} // setUsername()
 
 	/**
 	 * Indicates whether the columns in this object are only set to default values.
@@ -192,9 +152,8 @@ abstract class BaseThread extends BaseObject  implements Persistent
 	{
 		try {
 
-			$this->threadid = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
-			$this->threaduserid = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
-			$this->title = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+			$this->userid = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
+			$this->username = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -203,10 +162,10 @@ abstract class BaseThread extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 3; // 3 = ThreadPeer::NUM_COLUMNS - ThreadPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 2; // 2 = UserPeer::NUM_COLUMNS - UserPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
-			throw new PropelException("Error populating Thread object", $e);
+			throw new PropelException("Error populating User object", $e);
 		}
 	}
 
@@ -226,9 +185,6 @@ abstract class BaseThread extends BaseObject  implements Persistent
 	public function ensureConsistency()
 	{
 
-		if ($this->aUser !== null && $this->threaduserid !== $this->aUser->getUserid()) {
-			$this->aUser = null;
-		}
 	} // ensureConsistency
 
 	/**
@@ -252,13 +208,13 @@ abstract class BaseThread extends BaseObject  implements Persistent
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(ThreadPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(UserPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		// We don't need to alter the object instance pool; we're just modifying this instance
 		// already in the pool.
 
-		$stmt = ThreadPeer::doSelectStmt($this->buildPkeyCriteria(), $con);
+		$stmt = UserPeer::doSelectStmt($this->buildPkeyCriteria(), $con);
 		$row = $stmt->fetch(PDO::FETCH_NUM);
 		$stmt->closeCursor();
 		if (!$row) {
@@ -267,7 +223,7 @@ abstract class BaseThread extends BaseObject  implements Persistent
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
-			$this->aUser = null;
+			$this->collThreads = null;
 			$this->collPosts = null;
 		} // if (deep)
 	}
@@ -288,14 +244,14 @@ abstract class BaseThread extends BaseObject  implements Persistent
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(ThreadPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(UserPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				ThreadQuery::create()
+				UserQuery::create()
 					->filterByPrimaryKey($this->getPrimaryKey())
 					->delete($con);
 				$this->postDelete($con);
@@ -330,7 +286,7 @@ abstract class BaseThread extends BaseObject  implements Persistent
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(ThreadPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(UserPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		$con->beginTransaction();
@@ -350,7 +306,7 @@ abstract class BaseThread extends BaseObject  implements Persistent
 					$this->postUpdate($con);
 				}
 				$this->postSave($con);
-				ThreadPeer::addInstanceToPool($this);
+				UserPeer::addInstanceToPool($this);
 			} else {
 				$affectedRows = 0;
 			}
@@ -379,39 +335,35 @@ abstract class BaseThread extends BaseObject  implements Persistent
 		if (!$this->alreadyInSave) {
 			$this->alreadyInSave = true;
 
-			// We call the save method on the following object(s) if they
-			// were passed to this object by their coresponding set
-			// method.  This object relates to these object(s) by a
-			// foreign key reference.
-
-			if ($this->aUser !== null) {
-				if ($this->aUser->isModified() || $this->aUser->isNew()) {
-					$affectedRows += $this->aUser->save($con);
-				}
-				$this->setUser($this->aUser);
-			}
-
 			if ($this->isNew() ) {
-				$this->modifiedColumns[] = ThreadPeer::THREADID;
+				$this->modifiedColumns[] = UserPeer::USERID;
 			}
 
 			// If this object has been modified, then save it to the database.
 			if ($this->isModified()) {
 				if ($this->isNew()) {
 					$criteria = $this->buildCriteria();
-					if ($criteria->keyContainsValue(ThreadPeer::THREADID) ) {
-						throw new PropelException('Cannot insert a value for auto-increment primary key ('.ThreadPeer::THREADID.')');
+					if ($criteria->keyContainsValue(UserPeer::USERID) ) {
+						throw new PropelException('Cannot insert a value for auto-increment primary key ('.UserPeer::USERID.')');
 					}
 
 					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows += 1;
-					$this->setThreadid($pk);  //[IMV] update autoincrement primary key
+					$affectedRows = 1;
+					$this->setUserid($pk);  //[IMV] update autoincrement primary key
 					$this->setNew(false);
 				} else {
-					$affectedRows += ThreadPeer::doUpdate($this, $con);
+					$affectedRows = UserPeer::doUpdate($this, $con);
 				}
 
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
+			}
+
+			if ($this->collThreads !== null) {
+				foreach ($this->collThreads as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
 			}
 
 			if ($this->collPosts !== null) {
@@ -488,22 +440,18 @@ abstract class BaseThread extends BaseObject  implements Persistent
 			$failureMap = array();
 
 
-			// We call the validate method on the following object(s) if they
-			// were passed to this object by their coresponding set
-			// method.  This object relates to these object(s) by a
-			// foreign key reference.
-
-			if ($this->aUser !== null) {
-				if (!$this->aUser->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aUser->getValidationFailures());
-				}
-			}
-
-
-			if (($retval = ThreadPeer::doValidate($this, $columns)) !== true) {
+			if (($retval = UserPeer::doValidate($this, $columns)) !== true) {
 				$failureMap = array_merge($failureMap, $retval);
 			}
 
+
+				if ($this->collThreads !== null) {
+					foreach ($this->collThreads as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
 
 				if ($this->collPosts !== null) {
 					foreach ($this->collPosts as $referrerFK) {
@@ -531,7 +479,7 @@ abstract class BaseThread extends BaseObject  implements Persistent
 	 */
 	public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
 	{
-		$pos = ThreadPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+		$pos = UserPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 		$field = $this->getByPosition($pos);
 		return $field;
 	}
@@ -547,13 +495,10 @@ abstract class BaseThread extends BaseObject  implements Persistent
 	{
 		switch($pos) {
 			case 0:
-				return $this->getThreadid();
+				return $this->getUserid();
 				break;
 			case 1:
-				return $this->getThreaduserid();
-				break;
-			case 2:
-				return $this->getTitle();
+				return $this->getUsername();
 				break;
 			default:
 				return null;
@@ -571,23 +516,16 @@ abstract class BaseThread extends BaseObject  implements Persistent
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
-	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
 	{
-		$keys = ThreadPeer::getFieldNames($keyType);
+		$keys = UserPeer::getFieldNames($keyType);
 		$result = array(
-			$keys[0] => $this->getThreadid(),
-			$keys[1] => $this->getThreaduserid(),
-			$keys[2] => $this->getTitle(),
+			$keys[0] => $this->getUserid(),
+			$keys[1] => $this->getUsername(),
 		);
-		if ($includeForeignObjects) {
-			if (null !== $this->aUser) {
-				$result['User'] = $this->aUser->toArray($keyType, $includeLazyLoadColumns, true);
-			}
-		}
 		return $result;
 	}
 
@@ -603,7 +541,7 @@ abstract class BaseThread extends BaseObject  implements Persistent
 	 */
 	public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
 	{
-		$pos = ThreadPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+		$pos = UserPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 		return $this->setByPosition($pos, $value);
 	}
 
@@ -619,13 +557,10 @@ abstract class BaseThread extends BaseObject  implements Persistent
 	{
 		switch($pos) {
 			case 0:
-				$this->setThreadid($value);
+				$this->setUserid($value);
 				break;
 			case 1:
-				$this->setThreaduserid($value);
-				break;
-			case 2:
-				$this->setTitle($value);
+				$this->setUsername($value);
 				break;
 		} // switch()
 	}
@@ -649,11 +584,10 @@ abstract class BaseThread extends BaseObject  implements Persistent
 	 */
 	public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
 	{
-		$keys = ThreadPeer::getFieldNames($keyType);
+		$keys = UserPeer::getFieldNames($keyType);
 
-		if (array_key_exists($keys[0], $arr)) $this->setThreadid($arr[$keys[0]]);
-		if (array_key_exists($keys[1], $arr)) $this->setThreaduserid($arr[$keys[1]]);
-		if (array_key_exists($keys[2], $arr)) $this->setTitle($arr[$keys[2]]);
+		if (array_key_exists($keys[0], $arr)) $this->setUserid($arr[$keys[0]]);
+		if (array_key_exists($keys[1], $arr)) $this->setUsername($arr[$keys[1]]);
 	}
 
 	/**
@@ -663,11 +597,10 @@ abstract class BaseThread extends BaseObject  implements Persistent
 	 */
 	public function buildCriteria()
 	{
-		$criteria = new Criteria(ThreadPeer::DATABASE_NAME);
+		$criteria = new Criteria(UserPeer::DATABASE_NAME);
 
-		if ($this->isColumnModified(ThreadPeer::THREADID)) $criteria->add(ThreadPeer::THREADID, $this->threadid);
-		if ($this->isColumnModified(ThreadPeer::THREADUSERID)) $criteria->add(ThreadPeer::THREADUSERID, $this->threaduserid);
-		if ($this->isColumnModified(ThreadPeer::TITLE)) $criteria->add(ThreadPeer::TITLE, $this->title);
+		if ($this->isColumnModified(UserPeer::USERID)) $criteria->add(UserPeer::USERID, $this->userid);
+		if ($this->isColumnModified(UserPeer::USERNAME)) $criteria->add(UserPeer::USERNAME, $this->username);
 
 		return $criteria;
 	}
@@ -682,8 +615,8 @@ abstract class BaseThread extends BaseObject  implements Persistent
 	 */
 	public function buildPkeyCriteria()
 	{
-		$criteria = new Criteria(ThreadPeer::DATABASE_NAME);
-		$criteria->add(ThreadPeer::THREADID, $this->threadid);
+		$criteria = new Criteria(UserPeer::DATABASE_NAME);
+		$criteria->add(UserPeer::USERID, $this->userid);
 
 		return $criteria;
 	}
@@ -694,18 +627,18 @@ abstract class BaseThread extends BaseObject  implements Persistent
 	 */
 	public function getPrimaryKey()
 	{
-		return $this->getThreadid();
+		return $this->getUserid();
 	}
 
 	/**
-	 * Generic method to set the primary key (threadid column).
+	 * Generic method to set the primary key (userid column).
 	 *
 	 * @param      int $key Primary key.
 	 * @return     void
 	 */
 	public function setPrimaryKey($key)
 	{
-		$this->setThreadid($key);
+		$this->setUserid($key);
 	}
 
 	/**
@@ -714,7 +647,7 @@ abstract class BaseThread extends BaseObject  implements Persistent
 	 */
 	public function isPrimaryKeyNull()
 	{
-		return null === $this->getThreadid();
+		return null === $this->getUserid();
 	}
 
 	/**
@@ -723,19 +656,24 @@ abstract class BaseThread extends BaseObject  implements Persistent
 	 * If desired, this method can also make copies of all associated (fkey referrers)
 	 * objects.
 	 *
-	 * @param      object $copyObj An object of Thread (or compatible) type.
+	 * @param      object $copyObj An object of User (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
 	 * @throws     PropelException
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-		$copyObj->setThreaduserid($this->threaduserid);
-		$copyObj->setTitle($this->title);
+		$copyObj->setUsername($this->username);
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
 			// the getter/setter methods for fkey referrer objects.
 			$copyObj->setNew(false);
+
+			foreach ($this->getThreads() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addThread($relObj->copy($deepCopy));
+				}
+			}
 
 			foreach ($this->getPosts() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -747,7 +685,7 @@ abstract class BaseThread extends BaseObject  implements Persistent
 
 
 		$copyObj->setNew(true);
-		$copyObj->setThreadid(NULL); // this is a auto-increment column, so set to default value
+		$copyObj->setUserid(NULL); // this is a auto-increment column, so set to default value
 	}
 
 	/**
@@ -759,7 +697,7 @@ abstract class BaseThread extends BaseObject  implements Persistent
 	 * objects.
 	 *
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-	 * @return     Thread Clone of current object.
+	 * @return     User Clone of current object.
 	 * @throws     PropelException
 	 */
 	public function copy($deepCopy = false)
@@ -778,63 +716,123 @@ abstract class BaseThread extends BaseObject  implements Persistent
 	 * same instance for all member of this class. The method could therefore
 	 * be static, but this would prevent one from overriding the behavior.
 	 *
-	 * @return     ThreadPeer
+	 * @return     UserPeer
 	 */
 	public function getPeer()
 	{
 		if (self::$peer === null) {
-			self::$peer = new ThreadPeer();
+			self::$peer = new UserPeer();
 		}
 		return self::$peer;
 	}
 
 	/**
-	 * Declares an association between this object and a User object.
+	 * Clears out the collThreads collection
 	 *
-	 * @param      User $v
-	 * @return     Thread The current object (for fluent API support)
-	 * @throws     PropelException
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addThreads()
 	 */
-	public function setUser(User $v = null)
+	public function clearThreads()
 	{
-		if ($v === null) {
-			$this->setThreaduserid(NULL);
-		} else {
-			$this->setThreaduserid($v->getUserid());
-		}
-
-		$this->aUser = $v;
-
-		// Add binding for other direction of this n:n relationship.
-		// If this object has already been added to the User object, it will not be re-added.
-		if ($v !== null) {
-			$v->addThread($this);
-		}
-
-		return $this;
+		$this->collThreads = null; // important to set this to NULL since that means it is uninitialized
 	}
 
+	/**
+	 * Initializes the collThreads collection.
+	 *
+	 * By default this just sets the collThreads collection to an empty array (like clearcollThreads());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initThreads()
+	{
+		$this->collThreads = new PropelObjectCollection();
+		$this->collThreads->setModel('Thread');
+	}
 
 	/**
-	 * Get the associated User object
+	 * Gets an array of Thread objects which contain a foreign key that references this object.
 	 *
-	 * @param      PropelPDO Optional Connection object.
-	 * @return     User The associated User object.
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this User is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array Thread[] List of Thread objects
 	 * @throws     PropelException
 	 */
-	public function getUser(PropelPDO $con = null)
+	public function getThreads($criteria = null, PropelPDO $con = null)
 	{
-		if ($this->aUser === null && ($this->threaduserid !== null)) {
-			$this->aUser = UserQuery::create()->findPk($this->threaduserid, $con);
-			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aUser->addThreads($this);
-			 */
+		if(null === $this->collThreads || null !== $criteria) {
+			if ($this->isNew() && null === $this->collThreads) {
+				// return empty collection
+				$this->initThreads();
+			} else {
+				$collThreads = ThreadQuery::create(null, $criteria)
+					->filterByUser($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collThreads;
+				}
+				$this->collThreads = $collThreads;
+			}
 		}
-		return $this->aUser;
+		return $this->collThreads;
+	}
+
+	/**
+	 * Returns the number of related Thread objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related Thread objects.
+	 * @throws     PropelException
+	 */
+	public function countThreads(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collThreads || null !== $criteria) {
+			if ($this->isNew() && null === $this->collThreads) {
+				return 0;
+			} else {
+				$query = ThreadQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUser($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collThreads);
+		}
+	}
+
+	/**
+	 * Method called to associate a Thread object to this object
+	 * through the Thread foreign key attribute.
+	 *
+	 * @param      Thread $l Thread
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addThread(Thread $l)
+	{
+		if ($this->collThreads === null) {
+			$this->initThreads();
+		}
+		if (!$this->collThreads->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collThreads[]= $l;
+			$l->setUser($this);
+		}
 	}
 
 	/**
@@ -872,7 +870,7 @@ abstract class BaseThread extends BaseObject  implements Persistent
 	 * If the $criteria is not null, it is used to always fetch the results from the database.
 	 * Otherwise the results are fetched from the database the first time, then cached.
 	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this Thread is new, it will return
+	 * If this User is new, it will return
 	 * an empty collection or the current collection; the criteria is ignored on a new object.
 	 *
 	 * @param      Criteria $criteria optional Criteria object to narrow the query
@@ -888,7 +886,7 @@ abstract class BaseThread extends BaseObject  implements Persistent
 				$this->initPosts();
 			} else {
 				$collPosts = PostQuery::create(null, $criteria)
-					->filterByThread($this)
+					->filterByUser($this)
 					->find($con);
 				if (null !== $criteria) {
 					return $collPosts;
@@ -919,7 +917,7 @@ abstract class BaseThread extends BaseObject  implements Persistent
 					$query->distinct();
 				}
 				return $query
-					->filterByThread($this)
+					->filterByUser($this)
 					->count($con);
 			}
 		} else {
@@ -942,7 +940,7 @@ abstract class BaseThread extends BaseObject  implements Persistent
 		}
 		if (!$this->collPosts->contains($l)) { // only add it if the **same** object is not already associated
 			$this->collPosts[]= $l;
-			$l->setThread($this);
+			$l->setUser($this);
 		}
 	}
 
@@ -950,23 +948,23 @@ abstract class BaseThread extends BaseObject  implements Persistent
 	/**
 	 * If this collection has already been initialized with
 	 * an identical criteria, it returns the collection.
-	 * Otherwise if this Thread is new, it will return
-	 * an empty collection; or if this Thread has previously
+	 * Otherwise if this User is new, it will return
+	 * an empty collection; or if this User has previously
 	 * been saved, it will retrieve related Posts from storage.
 	 *
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
-	 * actually need in Thread.
+	 * actually need in User.
 	 *
 	 * @param      Criteria $criteria optional Criteria object to narrow the query
 	 * @param      PropelPDO $con optional connection object
 	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
 	 * @return     PropelCollection|array Post[] List of Post objects
 	 */
-	public function getPostsJoinUser($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public function getPostsJoinThread($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$query = PostQuery::create(null, $criteria);
-		$query->joinWith('User', $join_behavior);
+		$query->joinWith('Thread', $join_behavior);
 
 		return $this->getPosts($query, $con);
 	}
@@ -976,9 +974,8 @@ abstract class BaseThread extends BaseObject  implements Persistent
 	 */
 	public function clear()
 	{
-		$this->threadid = null;
-		$this->threaduserid = null;
-		$this->title = null;
+		$this->userid = null;
+		$this->username = null;
 		$this->alreadyInSave = false;
 		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
@@ -999,6 +996,11 @@ abstract class BaseThread extends BaseObject  implements Persistent
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
+			if ($this->collThreads) {
+				foreach ((array) $this->collThreads as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 			if ($this->collPosts) {
 				foreach ((array) $this->collPosts as $o) {
 					$o->clearAllReferences($deep);
@@ -1006,8 +1008,8 @@ abstract class BaseThread extends BaseObject  implements Persistent
 			}
 		} // if ($deep)
 
+		$this->collThreads = null;
 		$this->collPosts = null;
-		$this->aUser = null;
 	}
 
 	/**
@@ -1029,4 +1031,4 @@ abstract class BaseThread extends BaseObject  implements Persistent
 		return parent::__call($name, $params);
 	}
 
-} // BaseThread
+} // BaseUser

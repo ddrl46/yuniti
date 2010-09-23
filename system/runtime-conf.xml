@@ -1,15 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
+	<log>
+		<type>file</type>
+		<name>./propel.log</name>
+		<ident>propel</ident>
+		<level>7</level>
+		<conf></conf>
+	</log>
 	<propel>
 		<datasources default="yuniti">
 			<datasource id="yuniti">
 				<adapter>mysql</adapter>
 				<connection>
+					<classname>DebugPDO</classname>
 					<dsn>mysql:host=localhost;dbname=yuniti</dsn>
 					<user>root</user>
 					<password>root</password>
 				</connection>
 			</datasource>
 		</datasources>
+		<debugpdo>
+      <logging>
+        <details>
+          <method>
+            <enabled>true</enabled>
+          </method>
+          <time>
+            <enabled>true</enabled>
+          </time>
+          <mem>
+            <enabled>true</enabled>
+          </mem>
+        </details>
+      </logging>
+    </debugpdo>
 	</propel>
 </config>

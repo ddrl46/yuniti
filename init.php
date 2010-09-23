@@ -22,6 +22,11 @@ define('ROOT', dirname(__FILE__) . '/');
 define('SYSTEM_ROOT', ROOT . 'system/');
 
 /**
+ * Set the timezone
+ */
+date_default_timezone_set('UTC');
+
+/**
  * Propel setup
  */
 require_once SYSTEM_ROOT . 'lib/propel/Propel.php';
@@ -36,6 +41,7 @@ set_include_path(SYSTEM_ROOT . PATH_SEPARATOR . get_include_path());
  */
 function __autoload($class_name)
 {
+	// All Yuniti classes begin with a prefix
 	if (substr($class_name, 0, 7) == 'Yuniti_')
 	{
 		// Remove the Yuniti_ prefix
@@ -44,11 +50,19 @@ function __autoload($class_name)
 		// Change underscores to directories
 		$class = str_replace('_', '/', $class);
 
+		// Lowercase
+		$class = strtolower($class);
+
 		if (file_exists(SYSTEM_ROOT . '/classes/' . $class))
 		{
-			require SYSTEM_ROOT . '/classes/' . $class;
+			require_once SYSTEM_ROOT . '/classes/' . $class;
 			return;
 		}
+	}
+	// Unless it's the core class itself
+	elseif ($class_name == 'Yuniti')
+	{
+		require_once SYSTEM_ROOT . '/classes/yuniti.php';
 	}
 
 	throw new Exception("Could not load class $class_name");

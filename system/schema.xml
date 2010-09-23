@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database name="yuniti" defaultIdMethod="native">
-	<table name="thread" phpName="Thread">
+	<table name="thread">
 		<column name="threadid" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+		<column name="threaduserid" type="integer" required="true" />
+		<column name="title" type="varchar" size="150" required="true" />
+		<foreign-key foreignTable="user">
+			<reference local="threaduserid" foreign="userid" />
+		</foreign-key>
+	</table>
+	<table name="post">
+		<column name="postid" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+		<column name="threadid" type="integer" required="true" />
+		<column name="postuserid" type="integer" required="true" />
+		<column name="text" type="longvarchar" required="true" />
+		<foreign-key foreignTable="thread">
+			<reference local="threadid" foreign="threadid" />
+		</foreign-key>
+		<foreign-key foreignTable="user">
+			<reference local="postuserid" foreign="userid" />
+		</foreign-key>
+	</table>
+	<table name="user">
+		<column name="userid" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+		<column name="username" type="varchar" size="50" required="true" />
 	</table>
 </database>

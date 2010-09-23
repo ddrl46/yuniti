@@ -3,7 +3,7 @@
 
 
 /**
- * This class defines the structure of the 'thread' table.
+ * This class defines the structure of the 'post' table.
  *
  *
  *
@@ -14,12 +14,12 @@
  *
  * @package    propel.generator.orm.map
  */
-class ThreadTableMap extends TableMap {
+class PostTableMap extends TableMap {
 
 	/**
 	 * The (dot-path) name of this class
 	 */
-	const CLASS_NAME = 'orm.map.ThreadTableMap';
+	const CLASS_NAME = 'orm.map.PostTableMap';
 
 	/**
 	 * Initialize the table attributes, columns and validators
@@ -31,15 +31,16 @@ class ThreadTableMap extends TableMap {
 	public function initialize()
 	{
 	  // attributes
-		$this->setName('thread');
-		$this->setPhpName('Thread');
-		$this->setClassname('Thread');
+		$this->setName('post');
+		$this->setPhpName('Post');
+		$this->setClassname('Post');
 		$this->setPackage('orm');
 		$this->setUseIdGenerator(true);
 		// columns
-		$this->addPrimaryKey('THREADID', 'Threadid', 'INTEGER', true, null, null);
-		$this->addForeignKey('THREADUSERID', 'Threaduserid', 'INTEGER', 'user', 'USERID', true, null, null);
-		$this->addColumn('TITLE', 'Title', 'VARCHAR', true, 150, null);
+		$this->addPrimaryKey('POSTID', 'Postid', 'INTEGER', true, null, null);
+		$this->addForeignKey('THREADID', 'Threadid', 'INTEGER', 'thread', 'THREADID', true, null, null);
+		$this->addForeignKey('POSTUSERID', 'Postuserid', 'INTEGER', 'user', 'USERID', true, null, null);
+		$this->addColumn('TEXT', 'Text', 'LONGVARCHAR', true, null, null);
 		// validators
 	} // initialize()
 
@@ -48,8 +49,8 @@ class ThreadTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('User', 'User', RelationMap::MANY_TO_ONE, array('threaduserid' => 'userid', ), null, null);
-    $this->addRelation('Post', 'Post', RelationMap::ONE_TO_MANY, array('threadid' => 'threadid', ), null, null);
+    $this->addRelation('Thread', 'Thread', RelationMap::MANY_TO_ONE, array('threadid' => 'threadid', ), null, null);
+    $this->addRelation('User', 'User', RelationMap::MANY_TO_ONE, array('postuserid' => 'userid', ), null, null);
 	} // buildRelations()
 
-} // ThreadTableMap
+} // PostTableMap

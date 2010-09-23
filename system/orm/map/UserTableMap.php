@@ -3,7 +3,7 @@
 
 
 /**
- * This class defines the structure of the 'thread' table.
+ * This class defines the structure of the 'user' table.
  *
  *
  *
@@ -14,12 +14,12 @@
  *
  * @package    propel.generator.orm.map
  */
-class ThreadTableMap extends TableMap {
+class UserTableMap extends TableMap {
 
 	/**
 	 * The (dot-path) name of this class
 	 */
-	const CLASS_NAME = 'orm.map.ThreadTableMap';
+	const CLASS_NAME = 'orm.map.UserTableMap';
 
 	/**
 	 * Initialize the table attributes, columns and validators
@@ -31,15 +31,14 @@ class ThreadTableMap extends TableMap {
 	public function initialize()
 	{
 	  // attributes
-		$this->setName('thread');
-		$this->setPhpName('Thread');
-		$this->setClassname('Thread');
+		$this->setName('user');
+		$this->setPhpName('User');
+		$this->setClassname('User');
 		$this->setPackage('orm');
 		$this->setUseIdGenerator(true);
 		// columns
-		$this->addPrimaryKey('THREADID', 'Threadid', 'INTEGER', true, null, null);
-		$this->addForeignKey('THREADUSERID', 'Threaduserid', 'INTEGER', 'user', 'USERID', true, null, null);
-		$this->addColumn('TITLE', 'Title', 'VARCHAR', true, 150, null);
+		$this->addPrimaryKey('USERID', 'Userid', 'INTEGER', true, null, null);
+		$this->addColumn('USERNAME', 'Username', 'VARCHAR', true, 50, null);
 		// validators
 	} // initialize()
 
@@ -48,8 +47,8 @@ class ThreadTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('User', 'User', RelationMap::MANY_TO_ONE, array('threaduserid' => 'userid', ), null, null);
-    $this->addRelation('Post', 'Post', RelationMap::ONE_TO_MANY, array('threadid' => 'threadid', ), null, null);
+    $this->addRelation('Thread', 'Thread', RelationMap::ONE_TO_MANY, array('userid' => 'threaduserid', ), null, null);
+    $this->addRelation('Post', 'Post', RelationMap::ONE_TO_MANY, array('userid' => 'postuserid', ), null, null);
 	} // buildRelations()
 
-} // ThreadTableMap
+} // UserTableMap

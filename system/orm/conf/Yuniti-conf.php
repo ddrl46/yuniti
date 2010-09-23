@@ -9,12 +9,42 @@ $conf = array (
       'adapter' => 'mysql',
       'connection' => 
       array (
+        'classname' => 'DebugPDO',
         'dsn' => 'mysql:host=localhost;dbname=yuniti',
         'user' => 'root',
         'password' => 'root',
       ),
     ),
     'default' => 'yuniti',
+  ),
+  'debugpdo' => 
+  array (
+    'logging' => 
+    array (
+      'details' => 
+      array (
+        'method' => 
+        array (
+          'enabled' => true,
+        ),
+        'time' => 
+        array (
+          'enabled' => true,
+        ),
+        'mem' => 
+        array (
+          'enabled' => true,
+        ),
+      ),
+    ),
+  ),
+  'log' => 
+  array (
+    'type' => 'file',
+    'name' => '/Users/john/src/yuniti/system/propel.log',
+    'ident' => 'propel',
+    'level' => '7',
+    'conf' => '',
   ),
   'generator_version' => '1.5.4',
 );

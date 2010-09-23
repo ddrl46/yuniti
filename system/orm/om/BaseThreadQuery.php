@@ -7,19 +7,35 @@
  * 
  *
  * @method     ThreadQuery orderByThreadid($order = Criteria::ASC) Order by the threadid column
+ * @method     ThreadQuery orderByThreaduserid($order = Criteria::ASC) Order by the threaduserid column
+ * @method     ThreadQuery orderByTitle($order = Criteria::ASC) Order by the title column
  *
  * @method     ThreadQuery groupByThreadid() Group by the threadid column
+ * @method     ThreadQuery groupByThreaduserid() Group by the threaduserid column
+ * @method     ThreadQuery groupByTitle() Group by the title column
  *
  * @method     ThreadQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ThreadQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ThreadQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
+ * @method     ThreadQuery leftJoinUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the User relation
+ * @method     ThreadQuery rightJoinUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the User relation
+ * @method     ThreadQuery innerJoinUser($relationAlias = null) Adds a INNER JOIN clause to the query using the User relation
+ *
+ * @method     ThreadQuery leftJoinPost($relationAlias = null) Adds a LEFT JOIN clause to the query using the Post relation
+ * @method     ThreadQuery rightJoinPost($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Post relation
+ * @method     ThreadQuery innerJoinPost($relationAlias = null) Adds a INNER JOIN clause to the query using the Post relation
+ *
  * @method     Thread findOne(PropelPDO $con = null) Return the first Thread matching the query
  * @method     Thread findOneOrCreate(PropelPDO $con = null) Return the first Thread matching the query, or a new Thread object populated from the query conditions when no match is found
  *
  * @method     Thread findOneByThreadid(int $threadid) Return the first Thread filtered by the threadid column
+ * @method     Thread findOneByThreaduserid(int $threaduserid) Return the first Thread filtered by the threaduserid column
+ * @method     Thread findOneByTitle(string $title) Return the first Thread filtered by the title column
  *
  * @method     array findByThreadid(int $threadid) Return Thread objects filtered by the threadid column
+ * @method     array findByThreaduserid(int $threaduserid) Return Thread objects filtered by the threaduserid column
+ * @method     array findByTitle(string $title) Return Thread objects filtered by the title column
  *
  * @package    propel.generator.orm.om
  */
@@ -144,6 +160,187 @@ abstract class BaseThreadQuery extends ModelCriteria
 			$comparison = Criteria::IN;
 		}
 		return $this->addUsingAlias(ThreadPeer::THREADID, $threadid, $comparison);
+	}
+
+	/**
+	 * Filter the query on the threaduserid column
+	 * 
+	 * @param     int|array $threaduserid The value to use as filter.
+	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    ThreadQuery The current query, for fluid interface
+	 */
+	public function filterByThreaduserid($threaduserid = null, $comparison = null)
+	{
+		if (is_array($threaduserid)) {
+			$useMinMax = false;
+			if (isset($threaduserid['min'])) {
+				$this->addUsingAlias(ThreadPeer::THREADUSERID, $threaduserid['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
+			}
+			if (isset($threaduserid['max'])) {
+				$this->addUsingAlias(ThreadPeer::THREADUSERID, $threaduserid['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+		}
+		return $this->addUsingAlias(ThreadPeer::THREADUSERID, $threaduserid, $comparison);
+	}
+
+	/**
+	 * Filter the query on the title column
+	 * 
+	 * @param     string $title The value to use as filter.
+	 *            Accepts wildcards (* and % trigger a LIKE)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    ThreadQuery The current query, for fluid interface
+	 */
+	public function filterByTitle($title = null, $comparison = null)
+	{
+		if (null === $comparison) {
+			if (is_array($title)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $title)) {
+				$title = str_replace('*', '%', $title);
+				$comparison = Criteria::LIKE;
+			}
+		}
+		return $this->addUsingAlias(ThreadPeer::TITLE, $title, $comparison);
+	}
+
+	/**
+	 * Filter the query by a related User object
+	 *
+	 * @param     User $user  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    ThreadQuery The current query, for fluid interface
+	 */
+	public function filterByUser($user, $comparison = null)
+	{
+		return $this
+			->addUsingAlias(ThreadPeer::THREADUSERID, $user->getUserid(), $comparison);
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the User relation
+	 * 
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    ThreadQuery The current query, for fluid interface
+	 */
+	public function joinUser($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('User');
+		
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
+		
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'User');
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Use the User relation User object
+	 *
+	 * @see       useQuery()
+	 * 
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    UserQuery A secondary query class using the current class as primary query
+	 */
+	public function useUserQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+	{
+		return $this
+			->joinUser($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'User', 'UserQuery');
+	}
+
+	/**
+	 * Filter the query by a related Post object
+	 *
+	 * @param     Post $post  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    ThreadQuery The current query, for fluid interface
+	 */
+	public function filterByPost($post, $comparison = null)
+	{
+		return $this
+			->addUsingAlias(ThreadPeer::THREADID, $post->getThreadid(), $comparison);
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the Post relation
+	 * 
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    ThreadQuery The current query, for fluid interface
+	 */
+	public function joinPost($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('Post');
+		
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
+		
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'Post');
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Use the Post relation Post object
+	 *
+	 * @see       useQuery()
+	 * 
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    PostQuery A secondary query class using the current class as primary query
+	 */
+	public function usePostQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+	{
+		return $this
+			->joinPost($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'Post', 'PostQuery');
 	}
 
 	/**
